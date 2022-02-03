@@ -3,6 +3,15 @@ defmodule StickyBugWeb.BugLive do
 
   def mount(_params, _session, socket) do
     # Process.sleep(400)
+
+    # we will also subscribe in BugLive to show that PubSub is
+    # functioning well elsewhere, just not in ListenLive.
+    if connected?(socket) do
+      :ok = StickyBugWeb.ListenLive.Notify.subscribe()
+    end
+
+    socket = assign(socket, notifications: [])
+
     {:ok, socket}
   end
 
@@ -30,6 +39,8 @@ defmodule StickyBugWeb.BugLive do
     # functioning system, click any of the buttons to see the notification log.
     # StickyBugWeb.ListenLive.Notify.notify("Params hello to #{name}")
 
+    # You can also add the subscription code do this view to see 
+
     {:noreply, socket}
   end
 
@@ -48,10 +59,10 @@ defmodule StickyBugWeb.BugLive do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-cols-2">
-      <div>
+    <div class="grid grid-cols-2 gap-x-4">
+      <div class="bg-stone-100 p-4">
         <div class="mb-4 font-bold">
-          Hello <%= @name %>
+          Hello <%= @name %>, I have caught <%= Enum.count(@notifications) %> notifications in BugLive.
         </div>
         <ul class="space-y-2">
           <li>
@@ -99,5 +110,16 @@ defmodule StickyBugWeb.BugLive do
     </div>
     </div>
     """
+  end
+
+  # receive a notification broadcast and store it in our notification list
+  # only here to show notifications work fine in other context
+  def handle_info({:notification, %{id: id, message: message}}, socket) do
+    socket =
+      update(socket, :notifications, fn notis ->
+        [%{id: id, message: message} | notis]
+      end)
+
+    {:noreply, socket}
   end
 end

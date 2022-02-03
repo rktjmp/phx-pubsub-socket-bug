@@ -87,7 +87,7 @@ defmodule StickyBugWeb.ListenLive do
 
   def render(assigns) do
     ~H"""
-    <div class="space-y-2">
+    <div class="space-y-2 bg-indigo-100 p-4 mb-4">
       <p>
         Listen <%= inspect self() %> subscribed: <%= @subscribed %>
       </p>
