@@ -14,9 +14,12 @@ defmodule StickyBugWeb.BugLive do
     #
     StickyBugWeb.ListenLive.Notify.notify("Params hello to #{name}")
     #
-    # Seems to be "race-y" in some way, so we fake a heavy page load
+    # Seems to be "race-y" in some way, so we fake some load
     # though in my app I observe this bug without doing any action in
-    # handle params beyond adjusting some templates via @live_action
+    # handle params beyond adjusting some templates via @live_action.
+    # That "template adjustment" does have a non-trivial morphdom time,
+    # greater than 5ms, and the server-side re-render is probably also
+    # higher than the templates used in this repro.
     #
     # It's unclear if this value is machine dependent, it does not appear at
     # 1ms, but does at 2+. If in doubt add a few 100ms.
