@@ -7,5 +7,9 @@
     phx-click="lv:clear-flash"
     phx-value-key="error"><%= live_flash(@flash, :error) %></p>
 
+  <%# sticky does not effect the behaviour of the bug %>
+  <%= live_render(@socket, StickyBugWeb.ListenLive, id: "notification-listener", sticky: true) %>
+
   <%= @inner_content %>
+
 </main>

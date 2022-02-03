@@ -10,6 +10,17 @@ import Config
 config :sticky_bug,
   ecto_repos: [StickyBug.Repo]
 
+config :tailwind,
+  version: "3.0.7",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
+
 # Configures the endpoint
 config :sticky_bug, StickyBugWeb.Endpoint,
   url: [host: "localhost"],

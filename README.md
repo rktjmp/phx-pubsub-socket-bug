@@ -1,19 +1,32 @@
 # StickyBug
 
-To start your Phoenix server:
+## Outline
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+We have a standard LiveView app, and we want to show notifications.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+We deliver notifications over a PubSub topic.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+We have a standard LiveView setup, with one nested LiveView (`ListenLive`).
 
-## Learn more
+`ListenLive` subscribes to the topic on mount (once connected) and then handles
+new notifications as they come.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+`Notify` (nested in ListenLive for this demo) provides a `.notify` function that
+will broadcast a notification on the topic.
+
+`ListenLive` is `sticky` but that does not actually effect the observed behaviour.
+
+## Bugs
+
+There are two bugs observed, see http://localhost:4000/bug/alice for
+reproduction instructions.
+
+1) A javascript exception "statics is undefined" in `comprehensionToBuffer` 
+
+2) ListenLive receives broadcasts, updates its socket assigns, but won't re-render those changes.
+
+[ListenLive (& Notify)](https://github.com/rktjmp/phx-pubsub-socket-bug/blob/master/lib/sticky_bug_web/live/listen_live.ex): The "sticky nested liveview" that renders notifications.
+
+[BugLive](https://github.com/rktjmp/phx-pubsub-socket-bug/blob/master/lib/sticky_bug_web/live/bug_live.ex): The bug triggering code in handle_params.
+
+[OtherLive](https://github.com/rktjmp/phx-pubsub-socket-bug/blob/master/lib/sticky_bug_web/live/other_live.ex): just another navigable page.

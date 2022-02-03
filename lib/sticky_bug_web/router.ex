@@ -18,6 +18,11 @@ defmodule StickyBugWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    live_session :session do
+      live "/other", OtherLive, :index
+      live "/bug", BugLive, :index
+      live "/bug/:name", BugLive, :index
+    end
   end
 
   # Other scopes may use custom stacks.
